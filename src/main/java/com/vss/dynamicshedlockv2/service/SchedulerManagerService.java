@@ -56,6 +56,14 @@ public class SchedulerManagerService {
         jobsMap.put(taskDefinition.getJobName(), taskScheduler.schedule(wrap(synchronizeData, lockName), new CronTrigger(taskDefinition.getCronExpression())));
     }
 
+    public void stopJob(String jobName) {
+        var schedule = jobsMap.get(jobName);
+        if (schedule != null) {
+            schedule.cancel(false);
+            jobsMap.remove(jobName);
+        }
+    }
+
     public Runnable wrap(Runnable runnable, String lockName) {
         return new LockRunable(runnable, lockName, lockProvider);
     }
